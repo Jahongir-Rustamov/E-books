@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String   @unique
+  password   String
+  role       Role     @default(USER)
+  created_at DateTime @default(now())
+
+  purchases   Purchase[]
+  userLibrary UserLibrary[]
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  bookCategories BookCategory[]
+}
+
+model Book {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  cover_image String?
+  file_url    String
+  price       Decimal
+  age_limit   Int?
+
+  author_name String
+
+  created_at DateTime @default(now())
+
+  purchases      Purchase[]
+  userLibrary    UserLibrary[]
+  bookCategories BookCategory[]
+}
+
+model BookCategory {
+  book_id     Int
+  category_id Int
+
+  book     Book     @relation(fields: [book_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@id([book_id, category_id])
+}
+
+model Purchase {
+  id                    Int      @id @default(autoincrement())
+  user_id               Int
+  book_id               Int
+  amount                Decimal
+  currency              String
+  stripe_payment_intent String
+  payment_status        String
+  purchased_at          DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+  book Book @relation(fields: [book_id], references: [id])
+}
+
+model UserLibrary {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  book_id  Int
+  added_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+  book Book @relation(fields: [book_id], references: [id])
+}

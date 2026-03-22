@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: E-books
+      POSTGRES_PASSWORD: order02
+      POSTGRES_DB: BMI_PROJECT
+    ports:
+      - '5430:5432'
+    networks:
+      - freecodecamp
+networks:
+  freecodecamp:
