@@ -23,6 +23,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (data: SignupData) => Promise<boolean>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 type SignupData = {
@@ -182,7 +183,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Logout
   const logout = async () => {
     try {
       if (token) {
@@ -206,8 +206,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const refreshUser = async () => {
+    if (!token) return;
+    try {
+      const res = await fetch(`${BASE_URL}${API_ENDPOINTS.CHECK_AUTH}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (res.ok) {
+        const userData = await res.json();
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error('Refresh user error:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, isAuthenticated, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, isAuthenticated, login, signup, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

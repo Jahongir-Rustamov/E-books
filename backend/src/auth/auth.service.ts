@@ -39,7 +39,11 @@ export class AuthService {
         },
         include: {
           _count: {
-            select: { purchases: true }
+            select: {
+              purchases: {
+                where: { payment_status: 'succeeded' }
+              }
+            }
           }
         }
       });
@@ -60,7 +64,11 @@ export class AuthService {
       where: { email },
       include: {
         _count: {
-          select: { purchases: true }
+          select: {
+            purchases: {
+              where: { payment_status: 'succeeded' }
+            }
+          }
         }
       }
     });
@@ -83,7 +91,11 @@ export class AuthService {
       where: { id: userId },
       include: {
         _count: {
-          select: { purchases: true }
+          select: {
+            purchases: {
+              where: { payment_status: 'succeeded' }
+            }
+          }
         }
       }
     });

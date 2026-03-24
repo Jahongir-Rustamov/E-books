@@ -19,7 +19,7 @@ const { width } = Dimensions.get('window');
 export default function BookDetailScreen() {
   const { bookId } = useLocalSearchParams<{ bookId: string }>();
   const router = useRouter();
-  const { user, token, isAuthenticated } = useAuth();
+  const { user, token, isAuthenticated, refreshUser } = useAuth();
 
   const { t } = useLanguage();
   const { colorScheme } = useColorScheme();
@@ -220,6 +220,8 @@ export default function BookDetailScreen() {
 
               if (confirmRes.ok) {
                 setIsPurchased(true);
+                // Refresh user data (including purchase count)
+                await refreshUser();
                 // Also add to library automatically
                 if (!isSaved) {
                   const libRes = await fetch(`${BASE_URL}/user-library/add-book/${bookId}`, {
