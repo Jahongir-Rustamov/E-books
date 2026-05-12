@@ -110,6 +110,7 @@ export default function AddBookScreen() {
     if (!description.trim()) return Toast.show({ type: 'error', text1: 'Xatolik', text2: 'Tavsif kiriting' });
     if (!authorName.trim()) return Toast.show({ type: 'error', text1: 'Xatolik', text2: 'Muallif ismini kiriting' });
     if (!price.trim() || isNaN(Number(price))) return Toast.show({ type: 'error', text1: 'Xatolik', text2: "To'g'ri narx kiriting" });
+    if (Number(price) < 5000) return Toast.show({ type: 'error', text1: 'Narx juda kam', text2: 'Minimal narx 5,000 so\'m (Stripe talabi)' });
     if (selectedCategoryIds.length === 0) return Toast.show({ type: 'error', text1: 'Xatolik', text2: 'Kamida 1 ta kategoriya tanlang' });
     if (!coverImage) return Toast.show({ type: 'error', text1: 'Xatolik', text2: 'Muqova rasm tanlang' });
     if (!pdfFile) return Toast.show({ type: 'error', text1: 'Xatolik', text2: 'PDF fayl tanlang' });
@@ -319,12 +320,15 @@ export default function AddBookScreen() {
             <Text style={labelStyle}>Narxi (so'm) *</Text>
             <TextInput
               style={inputStyle}
-              placeholder="0"
+              placeholder="Min: 5,000"
               placeholderTextColor={isDark ? '#52525b' : '#9ca3af'}
               value={price}
               onChangeText={setPrice}
               keyboardType="numeric"
             />
+            <Text style={{ fontSize: 11, color: '#f97316', marginTop: -10, marginBottom: 10 }}>
+              ⚠ Minimal narx: 5,000 so'm
+            </Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={labelStyle}>Yosh chegarasi</Text>

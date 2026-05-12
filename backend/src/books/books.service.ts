@@ -145,6 +145,16 @@ export class BooksService {
         throw new BadRequestException('Book not found');
       }
 
+      // Delete UserLibrary entries for this book
+      await prisma.userLibrary.deleteMany({
+        where: { book_id: id }
+      });
+
+      // Delete Purchase entries for this book
+      await prisma.purchase.deleteMany({
+        where: { book_id: id }
+      });
+
       // Delete BookCategory relations for this book
       await prisma.bookCategory.deleteMany({
         where: { book_id: id }
